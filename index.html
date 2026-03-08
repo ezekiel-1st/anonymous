@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Send Me a Message</title>
+<style>
+body{
+font-family: Arial;
+background:#111;
+color:white;
+text-align:center;
+padding:40px;
+}
+
+.container{
+background:#222;
+padding:20px;
+border-radius:10px;
+width:320px;
+margin:auto;
+}
+
+input,textarea{
+width:90%;
+padding:10px;
+margin:10px;
+border:none;
+border-radius:5px;
+}
+
+button{
+padding:10px 20px;
+background:#00c3ff;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Send Me a Message</h1>
+<p>You can include your name or stay anonymous.</p>
+
+<div class="container">
+
+<input type="text" id="name" placeholder="Your name (optional)">
+
+<textarea id="message" placeholder="Write your message"></textarea>
+
+<button onclick="sendMessage()">Send</button>
+
+<p id="status"></p>
+
+</div>
+
+<script>
+function sendMessage(){
+
+let name = document.getElementById("name").value;
+let message = document.getElementById("message").value;
+
+if(message == ""){document.getElementById("status").innerText = "Please write a message.";return;}
+
+console.log("Name:",name);
+console.log("Message:",message);
+
+document.getElementById("status").innerText = "Message sent!";
+}
+</script>
+
+</body>
+</html>
