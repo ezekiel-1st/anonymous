@@ -1,73 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Send Me a Message</title>
-<style>
-body{
-font-family: Arial;
-background:#111;
-color:white;
-text-align:center;
-padding:40px;
-}
+  <meta charset="UTF-8">
+  <title>Anonymous Messages</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+    .container {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      width: 320px;
+      margin: auto;
+    }
+    input, textarea {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #00c3ff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0099cc;
+    }
+  </style>
 
-.container{
-background:#222;
-padding:20px;
-border-radius:10px;
-width:320px;
-margin:auto;
-}
-
-input,textarea{
-width:90%;
-padding:10px;
-margin:10px;
-border:none;
-border-radius:5px;
-}
-
-button{
-padding:10px 20px;
-background:#00c3ff;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-</style>
+  <!-- Firebase scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 </head>
-
 <body>
+  <h1>Send Me a Message</h1>
+  <p>You can include your name or stay anonymous.</p>
 
-<h1>Send Me a Message</h1>
-<p>stay anonymous.</p>
+  <!-- Input fields -->
+  <div class="container">
+    <input type="text" id="name" placeholder="Your name (optional)">
+    <textarea id="message" placeholder="Write your message"></textarea>
+    <button onclick="sendMessage()">Send</button>
+    <p id="status"></p>
+  </div>
 
-<div class="container">
+  <!-- Firebase config and sendMessage() -->
+  <script>
+    // 🔹 Paste your Firebase config here
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-<input type="text" id="name" placeholder="Your name (optional)">
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-<textarea id="message" placeholder="Write your message"></textarea>
+    // Function to send messages
+    function sendMessage() {
+      const name = document.getElementById("name").value || "Anonymous";
+      const message = document.getElementById("message").value;
 
-<button onclick="sendMessage()">Send</button>
+      if (!message) {
+        document.getElementById("status").innerText = "Please write a message.";
+        return;
+      }
 
-<p id="status"></p>
-
-</div>
-
-<script>
-function sendMessage(){
-
-let name = document.getElementById("name").value;
-let message = document.getElementById("message").value;
-
-if(message == ""){document.getElementById("status").innerText = "Please write a message.";return;}
-
-console.log("Name:",name);
-console.log("Message:",message);
-
-document.getElementById("status").innerText = "Message sent!";
-}
-</script>
-
+      db.collection("messages").add({
+        name: name,
+        message: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        document.getElementById("status").innerText = "Message sent!";
+        document.getElementById("name").value = "";
+        document.getElementById("message").value = "";
+      })
+      .catch((error) => {
+        document.getElementById("status").innerText = "Error sending message.";
+        console.error("Error:", error);
+      });
+    }
+  </script>
 </body>
 </html>
